@@ -1,0 +1,26 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+#not using port 80 for http, use port 8081
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 8081
+
+FILE=/home/kevin/fEMR/femr-2.2/RUNNING_PID
+
+if [ -f $FILE ]
+	then
+		rm $FILE
+fi
+
+/home/kevin/fEMR/femr-2.2/bin/femr -Dconfig.file=/home/kevin/fEMR/femr-2.2/conf/application.conf -Dhttp.port=8081
+
+exit 0
