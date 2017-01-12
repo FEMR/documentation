@@ -1,0 +1,143 @@
+Document: 
+	fEMR deployment guide 1.0
+
+Contact: 
+	kevin.zurek@teamfemr.org
+	http://teamfemr.org/slack.html
+
+Description: 
+	This document is designed to be a guide for deploying fEMR on a new server. For specific dependencies please check the README for the version of fEMR you are trying to deploy. This was originally written using Ubuntu Desktop edition, but has evolved into Ubuntu Server edition.
+
+Hardware used:
+	1 HAWNR3 router
+	1 Laptop (4gb RAM, Dual core i5)
+	1+ Ubiquiti AP Outdoor access point
+
+Software used:
+	Ubuntu 16.04
+	BIND 9.10.3-P4-Ubuntu DNS server
+	fEMR 2.3.0
+	Oracle Java 1.8.0_111
+	UniFi Controller V5
+	Sbt
+	MySQL Server 5.6
+	
+TODO:
+	Create fEMR startup script and place in /etc/init.d/. Use this script to update links in /etc/rc(runlevel).d/ for proper starting
+	Move iptable config out of rc.local and into the iptables configuration file
+	Configure fEMR to run as its own user instead of root
+
+----------Ubuntu Server Config----------
+This is meant to be version agnostic - see software documentation for dependencies.
+0) Update
+	`sudo apt update`
+	`sudo apt upgrade`
+1) Install Git
+	`sudo apt install git`
+2) Make Git directory
+	`mkdir /home/femr/Git`
+3) Clone femr
+	`cd /home/femr/Git`
+	`git clone https://github.com/FEMR/femr.git`
+4) Install SBT
+	http://www.scala-sbt.org/download.html
+5) Install Oracle Java
+	`sudo add-apt-repository ppa:webupd8team/java`
+	`sudo apt-get update`
+	`sudo apt install oracle-java8-installer`
+6) Install Mysql
+	`sudo apt install mysql-server-5.6`	
+7) Have Mysql start on boot
+	`sudo update-rc.d mysql defaults`
+8) Create fEMR database
+	`CREATE DATABASE femr`
+9) Create new mysql user with permissons for new database
+	`CREATE USER 'femr'@'localhost' IDENTIFIED BY 'password';
+	`GRANT ALL PRIVILEGES ON femr.* TO 'femr'@'localhost';`
+	`FLUSH PRIVILEGES;`
+10) [optional] Create new linux user for running fEMR (femrapp)
+	`sudo adduser femrapp`
+11) Goto the directory you cloned fEMR into and prepare for deployment
+	`cd /home/femr/Git/femr`
+	`git checkout release-2.3`
+	`sbt clean compile dist`
+12) Create directory to run femr from
+	`sudo mkdir /opt/femr`
+13) Copy zipped file from (11)
+	`sudo mv /home/femr/Git/femr/target/universal/femr-2.3.0.zip /opt/femr`
+14) Change ownership to femrapp
+	`chown femrapp /opt/femr`
+	`chgrp femrapp /opt/femr`
+	`chown femrapp /opt/femr/femr-2.3.0.zip`
+	`chgrp femrapp /opt/femr/femr-2.3.0.zip`
+15) Log in as femrapp, unzip femr-2.3.0.zip
+	`sudo su femrapp`
+	`unzip femr-x.x.x.zip`
+16) Create public/img folder and find a default image:
+	`mkdir /opt/femr/femr-2.3.0/public`
+	`mkdir /opt/femr/femr-2.3.0/public/img`
+17) Configure default admin password and default superuser password in conf/application.conf
+18) Create prod.conf
+	`cp conf/application.conf prod.conf'
+	'rm application.conf'
+19) Configure MySQL connection string, username, and password
+20) Configure fully qualified path for photos and csv
+21) Add http.port conf item
+22) Generate a new application secret
+	`cd /home/femr/Git/femr`
+	`sbt playGenerateSecret`
+23) Copy the secret into an environment (play.crypto.secret) variable in prod.conf
+24) Secure file permissions:
+	/opt/femr/femr-2.3.0: 700 femr femr
+		bin: 755 femr femr
+		conf: 700 femr femr
+		lib: 755 femr femr
+		logs: 700 femr femr
+		public: 755 femr femr
+		README.md: 644 femr femr
+25) Make sure screen doesn't turn off when lid is closed
+	`sudo vim /etc/systemd/logind.conf`
+	`HandleLidSwitch=ignore`
+
+######################################################
+----------fEMR start on boot Configuration----------
+1) Use the rc.local.example file to help configure the /etc/rc.local file on the new server. 
+
+######################################################
+----------BIND9 DNS Server Configuration----------
+1) Install DNS Server 
+	'sudo apt-get install bind9'
+2) Follow 'db.femr.com' and 'named.conf.local' for configuration. Use named.conf if you need logging for debugging
+
+######################################################
+----------Ubiquiti Controller Configuration----------
+1) Add source to /etc/apt/sources.list: 
+	https://help.ubnt.com/hc/en-us/articles/220066768-UniFi-How-to-Install-Update-via-APT-on-Debian-or-Ubuntu
+2) Add GPG key: 'sudo apt-key adv --keyserver keyserver.ubuntu.com --recv C0A52C50'
+3) apt-get update
+4) apt-get install unifi
+5) edit /etc/init.d/unifi. change JAVA_HOME to "JAVA_HOME = /usr/lib/jvm/java-8-oracle" or wherever java is installed
+6) When using more than one access point, you need to verify that each access point is running on its own channel
+
+######################################################
+----------HAWNR3 Router Config----------
+1) Connect to the HAWNR3 router
+2) Navigate to General Setup -> Internet Connection -> DNS
+3) Add a Primary DNS: 192.168.1.100. Apply changes.
+4) Navigate to General Setup -> Local Network
+5) Apply the following settings: 
+	-LAN IP
+		IP Address - 192.168.1.254, Subnet Mask - 255.255.255.0, 802.1d Spanning Tree - Disable, DHCP Server - Enable.
+	-DHCP Server
+		Lease Time - Forever, DHCP Client Start IP - 192.168.1.100, DHCP Client End IP - 192.168.1.199
+	-Static DHCP Leases (Enable)
+		MAC Address - MAC address of the server, IP Address - 192.168.1.100
+6) Navigate to General Setup -> Wireless Configuration -> Advanced Settings
+7) Set Broadcast Essid - Disable. Apply changes.
+
+######################################################
+----------Java Updates----------
+1) Update the JAVA_HOME variable in /etc/init.d/unifi
+
+
+
