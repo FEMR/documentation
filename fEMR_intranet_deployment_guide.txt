@@ -1,5 +1,5 @@
 Document: 
-	fEMR deployment guide 1.0
+	fEMR deployment guide
 
 Contact: 
 	kevin.zurek@teamfemr.org
@@ -139,5 +139,13 @@ This is meant to be version agnostic - see software documentation for dependenci
 ----------Java Updates----------
 1) Update the JAVA_HOME variable in /etc/init.d/unifi
 
-
+######################################################
+----------Remote Access----------
+1) Install openssh-server
+	sudo apt install openssh-server
+2) Copy your public key into $HOME/.ssh/authorized_keys
+3) Confirm you have remote access
+4) Enforce no passwords
+	sudo vim /etc/ssh/sshd_config
+	PasswordAuthentication no
 
