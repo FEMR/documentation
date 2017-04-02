@@ -1,0 +1,17 @@
+Here are a few of my commonly used things:
+
+--MySQL
+  Enable account for remote connection:
+    GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+  Remote dump:
+    mysqldump -u 'user' -h 'host' -P 'port' -p 'target DB' > 'target file'
+  Remote connect:
+    mysql -u 'user' -h 'host' -P 'port' -p
+  
+
+--Linux
+  Remote scp files:
+    scp -r 'user'@'host':/opt/femr/..../Upload .
+  
+
