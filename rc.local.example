@@ -21,6 +21,6 @@ if [ -f $FILE ]
 		rm $FILE
 fi
 
-/home/kevin/fEMR/femr-2.2/bin/femr -Dconfig.file=/home/kevin/fEMR/femr-2.2/conf/application.conf -Dhttp.port=8081 > /home/kevin/fEMR/femr-2.2/log
+/home/kevin/fEMR/femr-2.2/bin/femr -Dconfig.file=/home/kevin/fEMR/femr-2.2/conf/application.conf -Dhttp.port=8081 >> /home/kevin/fEMR/femr-2.2/log &
 
 exit 0
