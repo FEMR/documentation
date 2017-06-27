@@ -14,4 +14,7 @@ Here are a few of my commonly used things:
   Remote scp files:
     scp -r 'user'@'host':/opt/femr/..../Upload .
   
+  Recursive find & replace
+    find ./ -type f -exec sed -i -e '/s/replace/me/g' {} \;
+  
 
