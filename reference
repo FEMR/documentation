@@ -20,5 +20,12 @@ Here are a few of my commonly used things:
  --Docker
    Start up container:
      docker run -p 3306:3306 --name femr -e MYSQL_ROOT_PASSWORD=password -d mysql:5.6.35
+     
+ --OpenSSL encrypt/decrypt with password (use key for real security)
+   Encrypt:
+     openssl aes-256-cbc -a -salt -in secrets.txt -out secrets.txt.enc
+   
+   Decrypt:
+     openssl aes-256-cbc -d -a -in secrets.txt.enc -out secrets.txt.new
   
 
