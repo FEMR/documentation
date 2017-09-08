@@ -6,9 +6,10 @@ Here are a few of my commonly used things:
     FLUSH PRIVILEGES;
   Remote dump:
     mysqldump -u 'user' -h 'host' -P 'port' -p 'target DB' > 'target file'
+  Remote dump (docker):
+    docker exec CONTAINER /usr/bin/mysqldump -u root --password=pw DATABASE > db.sql
   Remote connect:
-    mysql -u 'user' -h 'host' -P 'port' -p
-  
+    mysql -u 'user' -h 'host' -P 'port' -p  
 
 --Linux
   Remote scp files:
