@@ -1,6 +1,6 @@
 Here are a few of my commonly used things:
 
---MySQL
+##MySQL
   Enable account for remote connection:
     GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
     FLUSH PRIVILEGES;
@@ -11,7 +11,18 @@ Here are a few of my commonly used things:
   Remote connect:
     mysql -u 'user' -h 'host' -P 'port' -p  
 
---Linux
+*Show all unique Triage dates from trip
+```
+select DISTINCT DATE(date_of_triage_visit) from patient_encounters ORDER BY date_of_triage_visit DESC;
+```
+*Get patient encounter count between dates
+```
+select count(*) from patient_encounters WHERE date_of_triage_visit > '2017-06-13';
+```
+
+
+
+##Linux
   Remote scp files:
     scp -r 'user'@'host':/opt/femr/..../Upload .
   
