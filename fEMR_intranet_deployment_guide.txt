@@ -102,7 +102,7 @@ This is meant to be version agnostic - see software documentation for dependenci
 ######################################################
 ----------fEMR start on boot Configuration----------
 1) Use the rc.local.example file to help configure the /etc/rc.local file on the new server. 
-
+2) If Ubuntu 18, make rc.local executable
 ######################################################
 ----------BIND9 DNS Server Configuration----------
 1) Install DNS Server 
