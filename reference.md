@@ -23,6 +23,10 @@ Here are a few of my commonly used things:
 ```
 select DISTINCT DATE(date_of_triage_visit) as dotv from patient_encounters ORDER BY dotv DESC;
 ```
+* Show all unique Triage dates from trip with a sum for how many encounters were on each date
+```
+select DISTINCT DATE(date_of_triage_visit) as dotv, COUNT(*) from patient_encounters GROUP BY dotv DESC;
+```
 * Get patient encounter count between dates
 ```
 select count(*) from patient_encounters WHERE date_of_triage_visit > '2017-06-13';
