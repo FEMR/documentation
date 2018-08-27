@@ -31,7 +31,10 @@ select DISTINCT DATE(date_of_triage_visit) as dotv, COUNT(*) from patient_encoun
 ```
 select count(*) from patient_encounters WHERE date_of_triage_visit > '2017-06-13';
 ```
-
+* Retrieve unique patient count prior to a particular encounter (isolating trips)
+```
+select DISTINCT(patient_id) from patient_encounters where id < 100443;
+```
 
 
 ## Linux
